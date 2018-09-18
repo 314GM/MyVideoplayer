@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SurfaceView
+        android:id="@+id/video_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.example.a314gm.myvideoplayer.view.ControllerView
+        android:id="@+id/video_controller"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.example.a314gm.myvideoplayer.view.ControllerView>
+
+    <include
+        android:id="@+id/video_loading"
+        layout="@layout/layout_video_loading" />
+
+    <com.example.a314gm.myvideoplayer.view.BrightnessVolumeView
+        android:id="@+id/video_system_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+    </com.example.a314gm.myvideoplayer.view.BrightnessVolumeView>
+
+    <com.example.a314gm.myvideoplayer.view.ProgressView
+        android:id="@+id/video_progress_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+    </com.example.a314gm.myvideoplayer.view.ProgressView>
+
+</RelativeLayout>
