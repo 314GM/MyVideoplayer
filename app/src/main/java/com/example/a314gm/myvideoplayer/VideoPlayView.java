@@ -78,7 +78,7 @@ public class VideoPlayView extends GestureView {
         }
     }
 
-
+    //继承父类的
     @Override
     public void endGesture(int type) {
         switch (type) {
