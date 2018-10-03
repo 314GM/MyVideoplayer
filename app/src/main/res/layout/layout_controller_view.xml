@@ -16,7 +16,7 @@
         android:src="@drawable/ic_lock_open"
         android:visibility="gone" />
 
-    <com.boredream.bdvideoplayer.view.VideoErrorView
+    <com.example.a314gm.myvideoplayer.view.ErrorView
         android:id="@+id/video_controller_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

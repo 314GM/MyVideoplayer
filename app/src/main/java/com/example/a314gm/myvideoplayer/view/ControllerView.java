@@ -38,8 +38,8 @@ public class ControllerView extends FrameLayout {
     private ImageView mScreenLock;                          //锁屏按钮图片
     private ErrorView mErrorView;                           //错误显示View
 
-    private boolean isScreenLock;                           //是否锁屏屏幕
-    private boolean mShowing;                               //是否为显示状态
+    private boolean isScreenLock = false;                   //是否锁屏屏幕
+    private boolean mShowing = true;                        //是否为显示状态
     private boolean mAllowUnWifiPlay;                       //是否允许在没有WiFi的情况下播放
     private boolean mDragging;                              //进度条是否在被拖拽
     private long mDraggingProgress;                         //进度条当前播放时间
@@ -109,10 +109,8 @@ public class ControllerView extends FrameLayout {
             //用户触摸手势已经开始
             @Override
             public void onStartTrackingTouch(SeekBar bar) {
-                show(3600000);
-
+                show(360000);
                 mDragging = true;
-
                 removeCallbacks(mShowProgress);
             }
 
@@ -123,10 +121,9 @@ public class ControllerView extends FrameLayout {
                 if (!fromuser) {
                     return;
                 }
-
                 long duration = mPlayer.getDuration();
                 mDraggingProgress = (duration * progress) / 1000L;
-
+                Log.i("DDD progress", duration+"&"+progress+"="+mDraggingProgress);
                 if (mVideoProgress != null) {
                     mVideoProgress.setText(StringUtils.stringForTime((int) mDraggingProgress));
                 }
@@ -135,8 +132,8 @@ public class ControllerView extends FrameLayout {
             //用户触摸手势已经结束
             @Override
             public void onStopTrackingTouch(SeekBar bar) {
-                mPlayer.seekTo((int) mDraggingProgress);
                 play();
+                mPlayer.seekTo((int) mDraggingProgress);
                 mDragging = false;
                 mDraggingProgress = 0;
 
@@ -239,7 +236,7 @@ public class ControllerView extends FrameLayout {
         if (timeout > 0) {
             //如果上一个延迟线程还没执行，就取消
             removeCallbacks(mFadeOut);
-            postDelayed(mFadeOut, timeout);
+            postDelayed(mFadeOut,timeout);
         }
     }
 
@@ -249,7 +246,7 @@ public class ControllerView extends FrameLayout {
         }
 
         if (!DisplayUtils.isPortrait(mContext)) {
-            // 横屏才消失
+            // 不是横屏设置返回键消失
             mControllerBack.setVisibility(GONE);
         }
         mControllerTitle.setVisibility(GONE);
@@ -337,7 +334,7 @@ public class ControllerView extends FrameLayout {
     private void showError(int status) {
         mErrorView.showError(status);
         hide();
-        // 如果提示了错误，则看需要解锁
+        // 如果提示了错误，则需要解锁
         if (isScreenLock) {
             unlock();
         }

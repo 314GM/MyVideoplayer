@@ -56,9 +56,9 @@ public class ErrorView extends FrameLayout{
         video_error_retry.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (onVideoControlListener != null) {
+                if (onVideoControlListener != null) {
                     onVideoControlListener.onRetry(curStatus);
-                }*/
+                }
             }
         });
 

@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_start"
+    <com.example.a314gm.myvideoplayer.VideoPlayView
+        android:id="@+id/video_play_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        android:text="play" />
+        android:layout_height="200dp"
+        android:background="#888">
+    </com.example.a314gm.myvideoplayer.VideoPlayView>
 
 </android.support.constraint.ConstraintLayout>

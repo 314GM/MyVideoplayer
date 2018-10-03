@@ -68,7 +68,10 @@ public abstract class GestureView extends FrameLayout implements GestureDetector
                 endGesture(mGestureAction);
                 break;
         }
-        return super.onTouchEvent(event);
+        /*蠢逼bug，我说触控怎么没反应，原来是没有返回true
+        返回了return super.onTouchEvent(event);
+        点击事件没有被拦截，发到下游去了……*/
+        return true;
     }
 
     @Override

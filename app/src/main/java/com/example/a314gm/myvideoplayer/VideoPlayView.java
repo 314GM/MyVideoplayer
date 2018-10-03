@@ -35,11 +35,11 @@ import com.example.a314gm.myvideoplayer.view.VideoPlayer;
 public class VideoPlayView extends GestureView {
 
     private SurfaceView mSurfaceView;                       //播放荧幕
-    private View mLoading;                                  //
+    private View mLoading;                                  //loading图标
     private ControllerView mControllerView;                 //播放控制视图
     private BrightnessVolumeView mBrightnessVolumeView;     //亮度和音量调整视图
     private ProgressView mProgressView;                     //进度条视图
-    private VideoPlayer mMediaPlayer;                       //播放器
+    private VideoPlayer mVideoPlayer;                       //播放器
     private Context mContext;
 
     private boolean isBackgroundPause;                      //后台暂停
@@ -67,7 +67,7 @@ public class VideoPlayView extends GestureView {
 
         switch(type){
             case GestureView.GESTURE_ACTION_PROGRESS:
-                mProgressView.show(x, mMediaPlayer.getCurrentPosition(), mMediaPlayer.getDuration());
+                mProgressView.show(x, mVideoPlayer.getCurrentPosition(), mVideoPlayer.getDuration());
                 break;
             case GestureView.GESTURE_ACTION_VOLUME:
                 mBrightnessVolumeView.show(mBrightnessVolumeView.VOLUME_SETTINGS, x, max);
@@ -78,7 +78,7 @@ public class VideoPlayView extends GestureView {
         }
     }
 
-    //继承父类的
+    //重写父类的endgesture结束手势动作
     @Override
     public void endGesture(int type) {
         switch (type) {
@@ -89,7 +89,7 @@ public class VideoPlayView extends GestureView {
                 break;
             case GestureView.GESTURE_ACTION_PROGRESS:
                 Log.i("DDD", "endGesture: bottom");
-                mMediaPlayer.seekTo(mProgressView.getTargetProgress());
+                mVideoPlayer.seekTo(mProgressView.getTargetProgress());
                 mProgressView.hide();
                 break;
         }
@@ -100,7 +100,6 @@ public class VideoPlayView extends GestureView {
         mContext = context;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         inflater.inflate(R.layout.layout_video_view, this);
-
         mSurfaceView = findViewById(R.id.video_surface);
         mLoading = findViewById(R.id.video_loading);
         mControllerView = findViewById(R.id.video_controller);
@@ -115,9 +114,9 @@ public class VideoPlayView extends GestureView {
                 initWidth = getWidth();
                 initHeight = getHeight();
 
-                if (mMediaPlayer != null) {
-                    mMediaPlayer.setDisplay(holder);
-                    mMediaPlayer.openVideo();
+                if (mVideoPlayer != null) {
+                    mVideoPlayer.setDisplay(holder);
+                    mVideoPlayer.openVideo();
                 }
             }
 
@@ -135,17 +134,21 @@ public class VideoPlayView extends GestureView {
         registerNetChangedReceiver();
     }
 
+    //初始化播放器
     private void initPlayer() {
-        mMediaPlayer = new VideoPlayer();
-        mMediaPlayer.setCallback(new VideoCallback() {
+        mVideoPlayer = new VideoPlayer();
+        //注册监听回调
+        mVideoPlayer.setCallback(new VideoCallback() {
 
             @Override
             public void onStateChanged(int curState) {
                 switch (curState) {
                     case VideoPlayer.STATE_IDLE:
+                        //放弃音频焦点
                         mAudioManager.abandonAudioFocus(null);
                         break;
                     case VideoPlayer.STATE_PREPARING:
+                        //请求长时间音频焦点
                         mAudioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
                         break;
                 }
@@ -174,7 +177,7 @@ public class VideoPlayView extends GestureView {
 
             @Override
             public void onPrepared(MediaPlayer mp) {
-                mMediaPlayer.start();
+                mVideoPlayer.start();
                 mControllerView.show();
                 mControllerView.hideErrorView();
             }
@@ -184,35 +187,40 @@ public class VideoPlayView extends GestureView {
 
             }
         });
-        mControllerView.setMediaPlayer(mMediaPlayer);
+        //给ControllerView注入灵魂
+        mControllerView.setMediaPlayer(mVideoPlayer);
     }
 
+    //显示/隐藏loadingView
     private void showLoading() {
-        mLoading.setVisibility(View.VISIBLE);
+        mLoading.setVisibility(VISIBLE);
     }
 
     private void hideLoading() {
-        mLoading.setVisibility(View.GONE);
+        mLoading.setVisibility(GONE);
     }
 
+    //停止播放
     public void onStop() {
-        if (mMediaPlayer.isPlaying()) {
+        if (mVideoPlayer.isPlaying()) {
             // 如果已经开始且在播放，则暂停同时记录状态
             isBackgroundPause = true;
-            mMediaPlayer.pause();
+            mVideoPlayer.pause();
         }
     }
 
+    //从停止->开始播放
     public void onStart() {
         if (isBackgroundPause) {
             // 如果切换到后台暂停，后又切回来，则继续播放
             isBackgroundPause = false;
-            mMediaPlayer.start();
+            mVideoPlayer.start();
         }
     }
 
+    //销毁
     public void onDestroy() {
-        mMediaPlayer.stop();
+        mVideoPlayer.stop();
         mControllerView.release();
         unRegisterNetChangedReceiver();
     }
@@ -223,19 +231,22 @@ public class VideoPlayView extends GestureView {
             return;
         }
 
-        mMediaPlayer.reset();
+        mVideoPlayer.reset();
 
         String videoPath = video.getVideoPath();
         mControllerView.setVideoInfo(video);
-        mMediaPlayer.setVideoPath(videoPath);
+        mVideoPlayer.setVideoPath(videoPath);
     }
 
+    //重写GestureDetector.OnGestureListener的单击，按下，滑动方法
+    //轻击抬起
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
         mControllerView.toggleDisplay();
         return super.onSingleTapUp(e);
     }
 
+    //按下屏幕
     @Override
     public boolean onDown(MotionEvent e) {
         if (isLock()) {
@@ -244,6 +255,7 @@ public class VideoPlayView extends GestureView {
         return super.onDown(e);
     }
 
+    //滑动
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (isLock()) {
@@ -256,6 +268,7 @@ public class VideoPlayView extends GestureView {
         return mControllerView.isLock();
     }
 
+    //暴露给用户注册控制监听
     public void setOnVideoControlListener(VideoControlListener onVideoControlListener) {
         mControllerView.setOnVideoControlListener(onVideoControlListener);
     }
@@ -263,7 +276,7 @@ public class VideoPlayView extends GestureView {
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-
+        //切换屏幕方向
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             getLayoutParams().width = initWidth;
             getLayoutParams().height = initHeight;
@@ -276,6 +289,7 @@ public class VideoPlayView extends GestureView {
 
     private NetChangedReceiver netChangedReceiver;
 
+    //注册网络状态变更广播接收器
     public void registerNetChangedReceiver() {
         if (netChangedReceiver == null) {
             netChangedReceiver = new NetChangedReceiver();
@@ -285,12 +299,14 @@ public class VideoPlayView extends GestureView {
         }
     }
 
+    //注销网络状态变更广播接收器
     public void unRegisterNetChangedReceiver() {
         if (netChangedReceiver != null) {
             mActivity.unregisterReceiver(netChangedReceiver);
         }
     }
 
+    //网络连接广播接收器
     private class NetChangedReceiver extends BroadcastReceiver {
 
         @Override

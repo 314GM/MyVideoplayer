@@ -28,7 +28,7 @@ public class VideoPlayer {
     private int curState = STATE_IDLE;                      //标记状态
 
     private VideoCallback callback;
-    private int currentBufferPercentage;
+    private int currentBufferPercentage;                    //当前缓冲百分比
     private String path;                                    //记录路径
     private SurfaceHolder surfaceHolder;
 
@@ -87,6 +87,7 @@ public class VideoPlayer {
             player.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
                 @Override
                 public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                    //当前缓冲百分比更新
                     currentBufferPercentage = percent;
                     if (callback != null) callback.onBufferingUpdate(mp, percent);
                 }
@@ -100,6 +101,14 @@ public class VideoPlayer {
                     if (callback != null) {
                         callback.onCompletion(mp);
                     }
+                }
+            });
+
+            player.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+                @Override
+                public void onSeekComplete(MediaPlayer mp) {
+                    setCurrentState(STATE_PLAYING);
+                    mp.start();
                 }
             });
 
