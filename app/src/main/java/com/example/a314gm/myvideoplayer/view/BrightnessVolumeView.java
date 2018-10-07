@@ -42,7 +42,7 @@ public class BrightnessVolumeView extends FrameLayout {
 
         mContext = context;
 
-        LayoutInflater.from(context).inflate(R.layout.layout_brightness_volume_view, this);
+        LayoutInflater.from(mContext).inflate(R.layout.layout_brightness_volume_view, this);
 
         mTitle = findViewById(R.id.system_ui_title);
         mImage = findViewById(R.id.system_ui_image);
@@ -55,12 +55,12 @@ public class BrightnessVolumeView extends FrameLayout {
     public void show(int type,int progress,int max) {
         if (type == BRIGHTNESS_SETTINGS) {
             mTitle.setText("亮度");
-            mImage.setImageResource(R.drawable.system_ui_brightness);
+            mImage.setImageResource(R.mipmap.ic_brightness);
         } else if (type == VOLUME_SETTINGS) {
             mTitle.setText("音量");
             mImage.setImageResource(progress == 0
-                    ? R.drawable.system_ui_no_volume
-                    : R.drawable.system_ui_volume);
+                    ? R.mipmap.ic_volume_down
+                    : R.mipmap.ic_volume_up);
         }
         mProgressBar.setMax(max);
         mProgressBar.setProgress(progress);

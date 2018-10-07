@@ -129,8 +129,8 @@ public abstract class GestureView extends FrameLayout implements GestureDetector
         //手势计算
         switch (mGestureAction) {
             case GESTURE_ACTION_PROGRESS: { // 进度变化
-                // 默认滑动一个屏幕 视频移动八分钟.
-                int delProgress = (int) (1.0f * distanceX / width * 480 * 1000);
+                // 默认滑动一个屏幕 视频移动3分钟.
+                int delProgress = (int) (1.0f * distanceX / width * 180 * 1000);
                 // 更新快进弹框
                 updateUI(GESTURE_ACTION_PROGRESS,delProgress,0);
                 break;

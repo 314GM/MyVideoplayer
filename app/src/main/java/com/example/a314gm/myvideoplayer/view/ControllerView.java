@@ -132,8 +132,8 @@ public class ControllerView extends FrameLayout {
             //用户触摸手势已经结束
             @Override
             public void onStopTrackingTouch(SeekBar bar) {
-                play();
                 mPlayer.seekTo((int) mDraggingProgress);
+                play();
                 mDragging = false;
                 mDraggingProgress = 0;
 

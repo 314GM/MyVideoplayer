@@ -98,8 +98,7 @@ public class VideoPlayView extends GestureView {
     //初始化控件
     private void init(Context context) {
         mContext = context;
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        inflater.inflate(R.layout.layout_video_view, this);
+        LayoutInflater.from(mContext).inflate(R.layout.layout_video_view, this);
         mSurfaceView = findViewById(R.id.video_surface);
         mLoading = findViewById(R.id.video_loading);
         mControllerView = findViewById(R.id.video_controller);

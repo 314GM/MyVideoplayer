@@ -12,7 +12,6 @@
         android:id="@+id/video_controller"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
     </com.example.a314gm.myvideoplayer.view.ControllerView>
 
     <include

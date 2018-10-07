@@ -47,7 +47,7 @@ public class ErrorView extends FrameLayout{
     }
 
     private void init(Context context) {
-
+        //android:background="@drawable/error_view_white"
         LayoutInflater.from(context).inflate(R.layout.layout_error_view, this);
 
         video_error_info = findViewById(R.id.video_error_info);

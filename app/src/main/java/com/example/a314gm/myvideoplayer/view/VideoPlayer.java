@@ -2,6 +2,7 @@ package com.example.a314gm.myvideoplayer.view;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -108,6 +109,7 @@ public class VideoPlayer {
                 @Override
                 public void onSeekComplete(MediaPlayer mp) {
                     setCurrentState(STATE_PLAYING);
+                    SystemClock.sleep(200);
                     mp.start();
                 }
             });
@@ -257,6 +259,18 @@ public class VideoPlayer {
             player.seekTo(progress);
         }
     }
+
+    public void seekTo2(int progress) {
+        if (player != null) {
+            if (progress <= player.getDuration()) {
+                player.seekTo(progress);
+            } else {
+                player.seekTo(player.getDuration());
+            }
+        }
+    }
+
+
 
     //是否播放
     public boolean isPlaying() {
